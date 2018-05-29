@@ -2,8 +2,6 @@
 
 #include "PhysicalShapeNode.h"
 
-//SQUARE TEST BRANCH
-
 class Shape : public PhysicalShapeNode
 {
 protected:
@@ -28,6 +26,8 @@ public:
 
 	//UPDATES
 	void updateStateWASDToAcceleration(int WASDdirection, float accellerationFactor);
+
+	void updateStateWASDToVelocity(int WASDdirection, float accellerationFactor);
 
 	void updateState();
 

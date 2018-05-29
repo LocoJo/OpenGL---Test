@@ -18,7 +18,7 @@ using namespace std;
 void setLastFrameParameters(float argx, float argy);
 bool objectIsGoingUp(float thisY, float oldY);
 bool objectIsGoingRight(float thisY, float oldY);
-void applyBoundaries(PhysicalShapeNode inBall, float inCellRadius, float inRadius);
+void applyBoundaries(Shape* inShape, float inCellRadius, float inRadius);
 void introScreen(GLFWwindow* window);
 void triangleDraw(float* verticies, float* colour);
 
@@ -82,11 +82,11 @@ int main(int argc, char **argv) {
 
 	float triangleVerticies[6];
 	triangleVerticies[0] = - 0.45;
-	triangleVerticies[1] = + 0.05;
+	triangleVerticies[1] = + 0.25;
 	triangleVerticies[2] = + 0.15;
-	triangleVerticies[3] = + 0.05;
+	triangleVerticies[3] = + 0.25;
 	triangleVerticies[4] = + 0.15;
-	triangleVerticies[5] = - 0.95;
+	triangleVerticies[5] = - 0.75;
 
 	Shape triangle = Shape(0.55, 0.45, triangleVerticies);
 
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
 
 		//Movement Loop
 		if (!inIntroSequence) {
-			applyBoundaries(ball, cellRadius, radius);
+			applyBoundaries(&movingTriangle, cellRadius, radius);
 
 			//Update function based on keyboard input
 			if (_kbhit()) {
@@ -121,11 +121,21 @@ int main(int argc, char **argv) {
 			}
 			else movingTriangle.updateState();
 
-			triangle.Shape::testBoundaries(movingTriangle.Shape::getPosition().getX(), movingTriangle.Shape::getPosition().getX());
-
+			triangle.testBoundaries(movingTriangle.getPosition().getX(), movingTriangle.getPosition().getY());
+			
 			//Draw triangles
-			triangleDraw(movingTriangle.Shape::getVerticies(), movingTriangle.Shape::getColour());
-			triangleDraw(triangle.Shape::getVerticies(), triangle.Shape::getColour());
+			triangleDraw(movingTriangle.getVerticies(), movingTriangle.getColour());
+			triangleDraw(triangle.getVerticies(), triangle.getColour());
+
+			glBegin(GL_POLYGON);
+
+			for (int i = 0; i < 360; i++) {
+				float degInRad = i * DEG2RAD;
+				glColor3f(0.3, 0.3, 0.3);
+				glVertex2f((cos(degInRad)*radius) + movingTriangle.getPosition().getX(), (sin(degInRad)*radius) + movingTriangle.getPosition().getY());
+			}
+
+			glEnd();
 
 		}
 
@@ -165,25 +175,21 @@ bool objectIsGoingUp(float thisY, float oldY) {
 	}
 }
 
-void applyBoundaries(PhysicalShapeNode inBall, float inCellRadius, float inRadius) {
-	if (ball.getPosition().getX() < -(cellRadius - radius) && !ball.isMovingRight()) {
-		//flipColours();
-		ball.flipVelocityX();
+void applyBoundaries(Shape* inShape, float inCellRadius, float inRadius) {
+	if (inShape->getPosition().getX() < -(inCellRadius - inRadius) && !inShape->isMovingRight()) {
+		inShape->flipVelocityX();
 	}
 
-	if (ball.getPosition().getX() > (cellRadius - radius) && ball.isMovingRight()) {
-		//flipColours();
-		ball.flipVelocityX();
+	if (inShape->getPosition().getX() > (inCellRadius - inRadius) && inShape->isMovingRight()) {
+		inShape->flipVelocityX();
 	}
 
-	if (ball.getPosition().getY() < -(cellRadius - radius) && !ball.isMovingUp()) {
-		//flipColours();
-		ball.flipVelocityY();
+	if (inShape->getPosition().getY() < -(inCellRadius - inRadius) && !inShape->isMovingUp()) {
+		inShape->flipVelocityY();
 	}
 
-	if (ball.getPosition().getY() > (cellRadius - radius) && ball.isMovingUp()) {
-		//flipColours();
-		ball.flipVelocityY();
+	if (inShape->getPosition().getY() > (inCellRadius - inRadius) && inShape->isMovingUp()) {
+		inShape->flipVelocityY();
 	}
 }
 
