@@ -27,6 +27,8 @@ public:
 	//UPDATES
 	void updateStateWASDToAcceleration(int WASDdirection, float accellerationFactor);
 
+	void updateStateWASDToVelocity(int WASDdirection, float accellerationFactor);
+
 	void updateState();
 
 	void updateVerticies(float* inPositiondiff);
