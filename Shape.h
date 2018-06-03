@@ -10,19 +10,20 @@ protected:
 	char boundarySign[3];
 	float verticies[6];
 	float gradient[3];
+	bool oldInsideBoundary[3];
 	void boundaryDefinitions();
-	PhysicalShapeNode geoCentreNode;
+	void geoCentreInitialization(float* inVerticies);
 
 public:
 	Shape();
 
-	Shape(float* inNodeCentre, float* inVerticies);
+	Shape(float* inVerticies);
 
-	Shape(float inNodeCentreX, float inNodeCentreY, float* inVerticies);
-
-	Shape(float* inNodeCentre, float* inVerticies, float* inColour);
+	Shape(float* inVerticies, float* inColour);
 
 	void testBoundaries(float x, float y);
+
+	void testBounceBoundaries(float x, float y, Shape* inShape);
 
 	//UPDATES
 	void updateStateWASDToAcceleration(int WASDdirection, float accellerationFactor);
@@ -38,5 +39,9 @@ public:
 
 	float* getVerticies();
 
+	//OPERATORS
+	void bounceOperator(double inGradient);
+
+	//DESTRUCTOR
 	~Shape();
 };
